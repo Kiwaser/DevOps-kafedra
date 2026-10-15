@@ -1,5 +1,6 @@
 services:
   proxy:
+    container_name: proxy
     image: nginx:alpine
     ports:
       - "80:80"
@@ -16,6 +17,7 @@ services:
       - app-net
 
   php:
+    container_name: php
     build:
       context: ../../laravel
       dockerfile: ../Deploy/dev/php/Dockerfile
@@ -24,8 +26,8 @@ services:
     networks:
       - app-net
 
-
   mysql:
+    container_name: mysql
     image: mysql:9
     env_file:
       - ../../laravel/.env
@@ -46,6 +48,7 @@ services:
       - app-net
 
   phpmyadmin:
+    container_name: phpmyadmin
     image: phpmyadmin:5.2.3-fpm-alpine
     volumes:
       - pma_data:/var/www/html
