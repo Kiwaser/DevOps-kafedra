@@ -1,6 +1,5 @@
 FROM mysql:9
 
-COPY --chmod=644 my.cnf /etc/mysql/conf.d/custom.cnf
 
 HEALTHCHECK --interval=5s --timeout=5s --start-period=20s --retries=20 \
   CMD mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" --silent || exit 1
