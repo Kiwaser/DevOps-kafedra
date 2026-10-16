@@ -1,11 +1,8 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.4-fpm-alpine3.24
 
-RUN apk add --no-cache \
-    curl git unzip libzip-dev oniguruma-dev \
-    freetype-dev libjpeg-turbo-dev libpng-dev \
-    && docker-php-ext-install pdo_mysql zip mbstring gd
+RUN docker-php-ext-install pdo_mysql
 
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 

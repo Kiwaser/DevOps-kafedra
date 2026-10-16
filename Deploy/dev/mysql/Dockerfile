@@ -1,0 +1,7 @@
+FROM mysql:9
+
+
+HEALTHCHECK --interval=5s --timeout=5s --start-period=20s --retries=20 \
+  CMD mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" --silent || exit 1
+
+EXPOSE 3306
