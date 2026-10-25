@@ -16,7 +16,11 @@ VOLUME /var/lib/pgadmin
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD wget -q -O /dev/null http://127.0.0.1:8080/misc/ping || exit 1
+# start-period: время на первый (долгий) запуск pgAdmin, ошибки в нём не считаются.
+# start-interval: пока идёт start-period, проверяем каждые 3 секунды,
+# чтобы контейнер стал healthy сразу, как только pgAdmin реально ответит.
+HEALTHCHECK --interval=30s --timeout=15s --start-period=300s --start-interval=3s --retries=3 \
+  CMD wget -q -T 5 -O - http://127.0.0.1:8080/misc/ping | grep -q PING \
+   && wget -q -T 10 -O /dev/null http://127.0.0.1:8080/login || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
