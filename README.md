@@ -13,27 +13,21 @@
 | Pgadmin    | `dpage/pgadmin4:9.18.0`         | Веб-интерфейс для БД    |
 
 
-Перейдите в папку проекта:
-
-   ```
-   cd DevOps-kafedra
-   ```
-
-1. Создайте файл окружения:
-
-   ```
-   cp laravel/.env.example laravel/.env
-   ```
-
-2. Запустите контейнеры:
+1. Перейдите в папку деплоя и дев сборки для проекта:
 
    ```
    cd Deploy/dev
-   docker compose up -d
+   ```
+
+Запустите sh скрипт:
+
+   ```
+   chmod +x script.sh
+   ./script.sh
    ```
 
 
-3. Эндпоинты
+2. Эндпоинты
 
 ## Всего их 3
 
@@ -43,6 +37,6 @@
 | Регистрация | http://localhost/api/register |                                |
 | PgAdmin     | http://localhost:8080         | `admin@example.com` / `secret` |
 
-4. Тестирование
+3. Тестирование
 
 Есть коллекция для Bruno скопированная из тестового репозитория
