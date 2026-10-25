@@ -6,13 +6,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-      - "8080:8080"
     volumes:
       - ../../laravel:/var/www/html
-      - pma_data:/var/www/pma:ro
     depends_on:
       - php
-      - phpmyadmin
     networks:
       - app-net
 
@@ -24,44 +21,30 @@ services:
     volumes:
       - ../../laravel:/var/www/html
     depends_on:
-      mysql:
+      pgsql:
         condition: service_healthy
     networks:
       - app-net
 
-  mysql:
-    container_name: mysql
+  pgsql:
+    container_name: pgsql
     build:
-      context: ./mysql
+      context: ./pgsql
       dockerfile: Dockerfile
     env_file:
       - ../../laravel/.env
     ports:
-      - "3307:3306"
+      - "127.0.0.1:5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
     networks:
       - app-net
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    build:
-      context: ./phpmyadmin
-      dockerfile: Dockerfile
-    volumes:
-      - pma_data:/var/www/html
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - app-net
-
 volumes:
-  mysql_data:
-  pma_data:
+  pgdata:
 
 networks:
   app-net:
