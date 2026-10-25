@@ -34,7 +34,7 @@ services:
     env_file:
       - ../../laravel/.env
     ports:
-      - "127.0.0.1:5433:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     security_opt:
@@ -43,8 +43,31 @@ services:
     networks:
       - app-net
 
+  pgadmin:
+    container_name: pgadmin
+    build:
+      context: ./pgadmin
+      dockerfile: Dockerfile
+    env_file:
+      - ../../laravel/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    networks:
+      - app-net
+
 volumes:
   pgdata:
+  pgadmin_data:
 
 networks:
   app-net:
