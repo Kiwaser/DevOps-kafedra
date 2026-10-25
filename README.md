@@ -4,13 +4,13 @@
 
 ## Стек
 
-| Компонент   | Версия / образ                  | Назначение                         |
-|-------------|---------------------------------|------------------------------------|
-| Laravel     | 12 (PHP `^8.4`)                 | Само приложение                    |
-| PHP-FPM     | `php:8.4-fpm-alpine` + Composer | Выполнение PHP-кода                |
-| Nginx       | `nginx:alpine`                  | Прокси: Laravel (`:80`), phpMyAdmin (`:8080`) |
-| MySQL       | `mysql:9`                       | База данных                        |
-| phpMyAdmin  | `5.2.3-fpm-alpine`              | Веб-интерфейс для БД               |
+| Компонент  | Версия / образ                  | Назначение              |
+|------------|---------------------------------|-------------------------|
+| Laravel    | 12 (PHP `^8.4`)                 | Само приложение         |
+| PHP-FPM    | `php:8.4-fpm-alpine` + Composer | Выполнение PHP-кода     |
+| Nginx      | `nginx:alpine`                  | Прокси: Laravel (`:80`) |
+| PostgreSQL | `postgres:17.11-alpine3.24`     | База данных             |
+| Pgadmin    | `dpage/pgadmin4:9.18.0`         | Веб-интерфейс для БД    |
 
 
 Перейдите в папку проекта:
@@ -32,36 +32,17 @@
    docker compose up -d
    ```
 
-3. Выполните первичную настройку (установка зависимостей, генерация ключа, миграции):
-   
-   Сначала нужно выдать права в контейнер
-   ```
-   docker compose exec -u root php chown -R www-data:www-data /var/www/html
-   ```
-   Потом уже:
-   ```
-   chmod +x script.sh
-   ./script.sh
-   ```
 
-   Скрипт выполняет три команды:
-
-   ```
-   docker compose exec php composer install
-   docker compose exec php php artisan key:generate
-   docker compose exec php php artisan migrate
-   ```
-
-4. Эндпоинты
+3. Эндпоинты
 
 ## Всего их 3
 
-| Сервис      | Адрес                         | Учётные данные        |
-|-------------|-------------------------------|-----------------------|
-| Приветствие | http://localhost/api/hello    |                       |
-| Регистрация | http://localhost/api/register |                       |
-| phpMyAdmin  | http://localhost:8080         | `root` / `rootsecret` |
+| Сервис      | Адрес                         | Учётные данные                 |
+|-------------|-------------------------------|--------------------------------|
+| Приветствие | http://localhost/api/hello    |                                |
+| Регистрация | http://localhost/api/register |                                |
+| PgAdmin     | http://localhost:8080         | `admin@example.com` / `secret` |
 
-5. Тестирование
+4. Тестирование
 
 Есть коллекция для Bruno скопированная из тестового репозитория
