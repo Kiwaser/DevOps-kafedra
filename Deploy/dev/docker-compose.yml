@@ -11,8 +11,6 @@ services:
     depends_on:
       php:
         condition: service_started
-      # proxy стартует только после того, как pgAdmin реально отвечает,
-      # поэтому `docker compose up -d` не напишет «Started», пока pgAdmin не готов
       pgadmin:
         condition: service_healthy
     networks:
@@ -59,14 +57,6 @@ services:
       - "8080:8080"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-    # Здоров = ping отвечает "PING" И страница логина отдаётся с кодом 200
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -T 5 -O - http://127.0.0.1:8080/misc/ping | grep -q PING && wget -q -T 10 -O /dev/null http://127.0.0.1:8080/login || exit 1"]
-      interval: 30s
-      timeout: 15s
-      retries: 3
-      start_period: 300s
-      start_interval: 3s
     depends_on:
       pgsql:
         condition: service_healthy
