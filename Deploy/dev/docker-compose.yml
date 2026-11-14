@@ -1,6 +1,6 @@
 services:
   proxy:
-    container_name: proxy
+    container_name: proxy-dev
     build:
       context: ./proxy
       dockerfile: Dockerfile
@@ -17,7 +17,7 @@ services:
       - app-net
 
   php:
-    container_name: php
+    container_name: backend-dev
     build:
       context: ../../laravel
       dockerfile: ../Deploy/dev/php/Dockerfile
@@ -30,7 +30,7 @@ services:
       - app-net
 
   pgsql:
-    container_name: pgsql
+    container_name: pgsql-dev
     build:
       context: ./pgsql
       dockerfile: Dockerfile
@@ -67,6 +67,12 @@ services:
     restart: unless-stopped
     networks:
       - app-net
+
+  frontend-dev:
+    container_name: frontend-dev
+    build:
+      context: ./node
+      dockerfile: Dockerfile
 
 volumes:
   pgdata:

@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine3.24
+FROM php:8.5-fpm-alpine3.24
 
 RUN apk upgrade --no-cache \
  && apk upgrade --no-cache -X https://dl-cdn.alpinelinux.org/alpine/edge/main curl libcurl \
