@@ -1,43 +1,45 @@
 services:
-  proxy:
-    container_name: proxy-dev
+  nginx:
+    container_name: nginx-dev
     build:
-      context: ./proxy
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/proxy/Dockerfile
     ports:
       - "80:80"
     volumes:
-      - ../../laravel:/var/www/html
+      - ../../laravel:/var/www/html:ro
     depends_on:
-      php:
+      backend:
         condition: service_started
-      pgadmin:
-        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
     networks:
       - app-net
 
-  php:
+  backend:
     container_name: backend-dev
     build:
-      context: ../../laravel
-      dockerfile: ../Deploy/dev/php/Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/php/Dockerfile
     volumes:
       - ../../laravel:/var/www/html
     depends_on:
       pgsql:
         condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
     networks:
       - app-net
 
   pgsql:
-    container_name: pgsql-dev
+    container_name: postgres-dev
     build:
-      context: ./pgsql
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/pgsql/Dockerfile
     env_file:
       - ../../laravel/.env
-    ports:
-      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     security_opt:
@@ -47,14 +49,14 @@ services:
       - app-net
 
   pgadmin:
-    container_name: pgadmin
+    container_name: pgadmin-dev
     build:
-      context: ./pgadmin
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/pgadmin/Dockerfile
     env_file:
       - ../../laravel/.env
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
@@ -68,11 +70,20 @@ services:
     networks:
       - app-net
 
-  frontend-dev:
+  frontend:
     container_name: frontend-dev
     build:
-      context: ./node
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/frontend/Dockerfile
+    volumes:
+      - ../../laravel:/app
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    networks:
+      - app-net
 
 volumes:
   pgdata:

@@ -1,0 +1,71 @@
+services:
+  nginx:
+    container_name: nginx-prod
+    build:
+      context: ../..
+      dockerfile: Deploy/prod/proxy/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ../../laravel:/var/www/html:ro
+    depends_on:
+      backend:
+        condition: service_started
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  backend:
+    container_name: backend-prod
+    build:
+      context: ../..
+      dockerfile: Deploy/prod/php/Dockerfile
+    volumes:
+      - ../../laravel:/var/www/html
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  pgsql:
+    container_name: postgres-prod
+    build:
+      context: ../..
+      dockerfile: Deploy/prod/pgsql/Dockerfile
+    env_file:
+      - ../../laravel/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  frontend:
+    container_name: frontend-prod
+    build:
+      context: ../..
+      dockerfile: Deploy/prod/frontend/Dockerfile
+    volumes:
+      - ../../laravel:/app
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    networks:
+      - app-net
+
+volumes:
+  pgdata:
+
+networks:
+  app-net:
+    driver: bridge
