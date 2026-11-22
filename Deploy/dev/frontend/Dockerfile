@@ -1,9 +1,11 @@
-FROM node:26.13.1-alpine3.24
+FROM node:26.13.1-alpine3.24 AS base
 
 RUN apk upgrade --no-cache \
- && npm install -g npm@latest \
+ && npm install -g npm@11.21.3 \
  && npm cache clean --force \
  && rm -rf /var/cache/apk/*
+
+FROM base AS final
 
 WORKDIR /app
 
