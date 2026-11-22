@@ -2,4 +2,4 @@
 set -e
 
 npm ci
-exec npm run prod
+exec npm run dev
