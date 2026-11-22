@@ -1,6 +1,7 @@
 FROM postgres:17.11-alpine3.24 AS base
 
 RUN apk upgrade --no-cache \
+ && apk add --no-cache --upgrade 'openssl>=3.5.9-r1' 'libxml2>=2.13.9-r3' \
  && apk add --no-cache su-exec \
  && rm /usr/local/bin/gosu \
  && ln -s /sbin/su-exec /usr/local/bin/gosu
