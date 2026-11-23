@@ -7,7 +7,20 @@ RUN apk upgrade --no-cache \
  && apk del --no-cache sudo \
  && rm -rf /etc/sudoers.d \
  && pip --python /venv/bin/python3 install --no-cache-dir --upgrade \
-      "pillow==13.0.0" "brotli==1.2.1" "certifi==2026.10.19" "urllib3==2.8.0" "authlib==1.9.0" "pyasn1==0.6.5" "oauthlib==4.0.1" "dnspython==2.9.2"\
+      "pillow==13.0.0" \
+      "brotli==1.2.1" \
+      "certifi==2026.10.19" \
+      "urllib3==2.8.0" \
+      "pyasn1==0.6.5" \
+      "oauthlib==4.0.1" \
+      "dnspython==2.9.2" \
+      "authlib==1.9.1" \
+      "pyjwt==2.15.0" \
+      "opentelemetry-api==1.45.2" \
+      "werkzeug==3.1.9" \
+      "mako==1.4.2" \
+      "joserfc==1.7.6" \
+      "setuptools==84.1.0" \
  && pip uninstall -y pip \
  && rm -rf /usr/local/lib/python3.14/ensurepip/_bundled /root/.cache
 

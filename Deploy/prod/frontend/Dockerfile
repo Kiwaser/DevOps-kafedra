@@ -9,7 +9,7 @@ FROM base AS final
 
 WORKDIR /app
 
-COPY --chmod=0755 Deploy/dev/frontend/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY --chmod=0755 Deploy/prod/frontend/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 USER node
 
