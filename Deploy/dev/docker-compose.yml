@@ -1,67 +1,93 @@
 services:
-  proxy:
-    container_name: proxy
+  nginx:
+    container_name: nginx-dev
     build:
-      context: ./proxy
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/proxy/Dockerfile
     ports:
       - "80:80"
-      - "8080:8080"
     volumes:
-      - ../../laravel:/var/www/html
-      - pma_data:/var/www/pma:ro
+      - ../../laravel:/var/www/html:ro
     depends_on:
-      - php
-      - phpmyadmin
-    networks:
-      - app-net
-
-  php:
-    container_name: php
-    build:
-      context: ../../laravel
-      dockerfile: ../Deploy/dev/php/Dockerfile
-    volumes:
-      - ../../laravel:/var/www/html
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - app-net
-
-  mysql:
-    container_name: mysql
-    build:
-      context: ./mysql
-      dockerfile: Dockerfile
-    env_file:
-      - ../../laravel/.env
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+      backend:
+        condition: service_started
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
     networks:
       - app-net
 
-  phpmyadmin:
-    container_name: phpmyadmin
+  backend:
+    container_name: backend-dev
     build:
-      context: ./phpmyadmin
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Deploy/dev/php/Dockerfile
     volumes:
-      - pma_data:/var/www/html
+      - ../../laravel:/var/www/html
     depends_on:
-      mysql:
+      pgsql:
         condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  pgsql:
+    container_name: postgres-dev
+    build:
+      context: ../..
+      dockerfile: Deploy/dev/pgsql/Dockerfile
+    env_file:
+      - ../../laravel/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  pgadmin:
+    container_name: pgadmin-dev
+    build:
+      context: ../..
+      dockerfile: Deploy/dev/pgadmin/Dockerfile
+    env_file:
+      - ../../laravel/.env
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  frontend:
+    container_name: frontend-dev
+    build:
+      context: ../..
+      dockerfile: Deploy/dev/frontend/Dockerfile
+    volumes:
+      - ../../laravel:/app
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
     networks:
       - app-net
 
 volumes:
-  mysql_data:
-  pma_data:
+  pgdata:
+  pgadmin_data:
 
 networks:
   app-net:

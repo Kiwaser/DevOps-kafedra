@@ -1,6 +1,9 @@
-FROM nginx:1.29-alpine
+FROM nginx:1.30-alpine-slim AS base
 
-COPY nginx.conf      /etc/nginx/conf.d/default.conf
-COPY phpmyadmin.conf /etc/nginx/conf.d/phpmyadmin.conf
+RUN apk upgrade --no-cache
+
+FROM base AS final
+
+COPY Deploy/dev/proxy/nginx.conf /etc/nginx/conf.d/default.conf
 
 CMD ["nginx", "-g", "daemon off;"]

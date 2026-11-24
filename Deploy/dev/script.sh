@@ -1,7 +1,12 @@
 #!/bin/sh
+set -e
 
-docker compose exec php composer install
+cp ../../laravel/.env.example ../../laravel/.env
 
-docker compose exec php php artisan key:generate
+docker compose up -d --wait --wait-timeout 360
 
-docker compose exec php php artisan migrate:fresh --seed
+docker compose exec backend composer install
+
+docker compose exec backend php artisan key:generate
+
+docker compose exec backend php artisan migrate:fresh --seed
